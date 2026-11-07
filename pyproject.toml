@@ -4,10 +4,13 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "covid-surveillance-analysis"
-version = "1.0.0"
+version = "1.1.0"
 description = "Python analysis of public COVID-19 surveillance data"
 readme = "README.md"
 requires-python = ">=3.10"
+
+[project.optional-dependencies]
+charts = ["matplotlib>=3.7"]
 
 [project.scripts]
 covid-analysis = "covid_analysis.cli:main"
