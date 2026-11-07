@@ -11,4 +11,4 @@ jobs:
         with:
           python-version: "3.12"
       - name: Compile project modules
-        run: python -m compileall -q PS3
+        run: python -m compileall -q covid_analysis
