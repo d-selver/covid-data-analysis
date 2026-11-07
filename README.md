@@ -1,47 +1,32 @@
-# COVID-19 Surveillance Data Analysis
+# COMP 100 — Problem Set 3: COVID-19 Data Analysis
 
-A reproducible Python project for exploring country-level COVID-19 cases and deaths, population-adjusted rates, and weekly case patterns by age group.
+This repository contains my COMP 100 Problem Set 3 Python implementation. The project processes daily COVID-19 cases and deaths and weekly case records by age group, then calculates country-level statistics and an overall impact summary.
 
-## Features
-- Load ECDC-style daily and weekly JSON exports.
-- Aggregate cases and deaths by country over an optional date window.
-- Calculate cases and deaths per million residents.
-- Summarize weekly cases and descriptive exposure ratios by age band.
-- Export structured JSON summaries.
-- Generate optional PNG charts for country and age-group comparisons.
-- Run automated unit tests with GitHub Actions.
+## Project files
 
-## Setup
-```bash
-python -m venv .venv
-source .venv/bin/activate
-pip install -e .
-```
+- `PS3/read_data.py` — reads the daily and weekly JSON datasets and builds the country database.
+- `PS3/covid_data_analysis.py` — calculates totals, per-million rates, age-group exposure, case probabilities, death distribution, and top-K daily records.
+- `PS3/covid_impact.py` — compares countries and age groups and writes a JSON summary.
 
-To enable charts:
-```bash
-pip install -e ".[charts]"
-```
+## Data files
+
+The original ECDC datasets are not stored in this repository. Download the corresponding JSON datasets from the European Centre for Disease Prevention and Control and place these files in the repository root:
+
+- `covid_data.json` — daily cases and deaths.
+- `age_cases.json` — weekly age-specific case data.
+
+Source: [ECDC publications and data](https://www.ecdc.europa.eu/en/publications-data/).
 
 ## Run
-Create a JSON summary:
+
+From the repository root, after adding both JSON files:
+
 ```bash
-covid-analysis --daily data/covid_data.json --age data/age_cases.json --start 2021-03-08 --end 2021-05-02 --output output/summary.json
+python -c "from PS3.read_data import process_daily_data, process_weekly_data; from PS3.covid_impact import analyze_covid_impact, write_summary_to_json; db = {}; process_daily_data(db); process_weekly_data(db); result = analyze_covid_impact(db); print(result); write_summary_to_json(result)"
 ```
 
-Create the summary and charts:
-```bash
-covid-analysis --daily data/covid_data.json --age data/age_cases.json --start 2021-03-08 --end 2021-05-02 --output output/summary.json --charts-dir output/charts
-```
+The analysis uses the date and week ranges defined in the assignment's processing functions.
 
-The chart option saves a top-10 country case comparison and, when age data is supplied, an age-group case comparison. Dates are inclusive. Daily JSON may be a list or an object containing a `records` list. Age data must be a JSON list.
+## Notes
 
-## Data and methodology
-This repository intentionally does not redistribute course-assignment datasets. Add a permitted ECDC export locally under `data/`; verify the current source terms and metadata before redistribution. Source: [ECDC publications and data](https://www.ecdc.europa.eu/en/publications-data).
-
-Per-million rates equal total count / population * 1,000,000. Age exposure is accumulated weekly reported cases divided by the age-band population; it is descriptive and must not be interpreted as an individual's infection probability. The optional death-by-age allocation is a transparent heuristic, not observed mortality data or a clinical estimate.
-
-## Tests
-```bash
-PYTHONPATH=src python -m unittest discover -s tests -v
-```
+The age-based death distribution uses the weighting assumptions specified in the assignment. It is a mathematical allocation exercise and should not be interpreted as observed age-specific mortality or a clinical estimate.
