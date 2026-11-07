@@ -8,6 +8,7 @@ A reproducible Python project for exploring country-level COVID-19 cases and dea
 - Calculate cases and deaths per million residents.
 - Summarize weekly cases and descriptive exposure ratios by age band.
 - Export structured JSON summaries.
+- Generate optional PNG charts for country and age-group comparisons.
 - Run automated unit tests with GitHub Actions.
 
 ## Setup
@@ -17,11 +18,23 @@ source .venv/bin/activate
 pip install -e .
 ```
 
+To enable charts:
+```bash
+pip install -e ".[charts]"
+```
+
 ## Run
+Create a JSON summary:
 ```bash
 covid-analysis --daily data/covid_data.json --age data/age_cases.json --start 2021-03-08 --end 2021-05-02 --output output/summary.json
 ```
-Dates are inclusive. Daily JSON may be a list or an object containing a `records` list. Age data must be a JSON list.
+
+Create the summary and charts:
+```bash
+covid-analysis --daily data/covid_data.json --age data/age_cases.json --start 2021-03-08 --end 2021-05-02 --output output/summary.json --charts-dir output/charts
+```
+
+The chart option saves a top-10 country case comparison and, when age data is supplied, an age-group case comparison. Dates are inclusive. Daily JSON may be a list or an object containing a `records` list. Age data must be a JSON list.
 
 ## Data and methodology
 This repository intentionally does not redistribute course-assignment datasets. Add a permitted ECDC export locally under `data/`; verify the current source terms and metadata before redistribution. Source: [ECDC publications and data](https://www.ecdc.europa.eu/en/publications-data).
